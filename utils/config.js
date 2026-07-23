@@ -1,0 +1,7 @@
+//Config contains env file properties for data base queries
+require('dotenv').config()
+
+const PORT = process.env.PORT
+const MONGODB_URI = process.env.MONGODB_URI
+
+module.exports = { MONGODB_URI, PORT }

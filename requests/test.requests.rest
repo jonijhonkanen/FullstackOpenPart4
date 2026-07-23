@@ -1,0 +1,78 @@
+//RUN the server with npm run dev
+//Then make requests with this file
+
+
+###
+//Get all blog entries from MongoDB
+//Get all persons
+GET http://localhost:3003/api/blogs
+
+###
+//Get single entry by id
+GET http://localhost:3003/api/blogs/6a624ed8ddf104c2f7c9c6a8
+
+###
+//Delete list item REMEBER ID
+DELETE http://localhost:3003/api/blogs/6a62512e88d4794c0f88d446
+
+###
+//PUT aka update list item entry
+PUT http://localhost:3003/api/blogs/6a624ed8ddf104c2f7c9c6a8
+Content-Type: application/json
+
+{
+    "title": "How to HTML",
+    "author": "Cloud Servire",
+    "url":"https://blogcloud/how_to_html",
+    "likes": 496
+}
+
+//Some test POST requests
+###
+//POST an entry for a blog list 1
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "How to HTML",
+    "author": "Cloud Servire",
+    "url":"https://blogcloud/how_to_html",
+    "likes": 404
+}
+
+###
+//POST an entry for a blog list 2
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "ECMA Basics",
+    "author": "John Basso",
+    "url":"https://blogcloud/ecma_basics",
+    "likes": 256
+}
+
+
+###
+//POST an entry for a blog list 3
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "How not to starve as a programmer",
+    "author": "Jia Long",
+    "url":"https://blogcloud/how_not_to_starve_as_a_programmer",
+    "likes": 500
+}
+
+###
+//POST an entry for a blog list 4
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "How to erase whole Internet",
+    "author": "Jia Long",
+    "url":"https://blogcloud/how_to_erase_whole_internet",
+    "likes": 404
+}
