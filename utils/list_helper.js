@@ -1,3 +1,29 @@
+const Blog = require('../models/blog')
+//Initial blogs for testing database
+const initialBlogs = [
+  {
+    title: 'How to HTML',
+    author: 'Cloud Servire',
+    url: 'https://blogcloud/how_to_html',
+    likes: 496,
+  },
+  {
+    title: 'How not to starve as a programmer',
+    author: 'Jia Long',
+    url: 'https://blogcloud/how_not_to_starve_as_a_programmer',
+    likes: 500,
+  },
+]
+
+//Async GET for all blogs
+const blogsInDb = async () => {
+  const blogs = await Blog.find({})
+  //return array of blogs
+  return blogs.map((blog) => blog.toJSON())
+}
+
+/*FOR NON DATABASE TESTS*/
+
 //Dummy function, takes an array of blogs and returns 1
 const dummy = (blogs) => {
   return 1
@@ -95,6 +121,8 @@ const mostLikes = (blogs) => {
 }
 
 module.exports = {
+  blogsInDb,
+  initialBlogs,
   dummy,
   totalLikes,
   favoriteBlog,

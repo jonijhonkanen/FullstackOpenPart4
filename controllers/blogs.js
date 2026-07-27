@@ -4,13 +4,14 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 
 //GET All blog list items at once
-blogsRouter.get('/', (request, response) => {
-  Blog.find({}).then((blogs) => {
-    response.json(blogs)
-  })
+//Refactored to async await
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({})
+  response.json(blogs)
 })
 
 //GET for one blog list item by id
+//NOT REFACTORED YET
 blogsRouter.get('/:id', (request, response, next) => {
   Blog.findById(request.params.id)
     .then((blog) => {
@@ -24,53 +25,61 @@ blogsRouter.get('/:id', (request, response, next) => {
 })
 
 //POST for saving new blog list item
-blogsRouter.post('/', (request, response, next) => {
+//Refactored to async await
+blogsRouter.post('/', async (request, response) => {
   const body = request.body
+
+  //console.log(body.title)
+  //console.log(body.url)
+
+  //Check title or url fields
+  const hasMissingFields = body.title == null || body.url == null
+  //console.log(hasMissingFields)
 
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes,
+    likes: body.likes || 0,
   })
 
-  blog
-    .save()
-    .then((savedBlog) => {
-      response.json(savedBlog)
-    })
-    .catch((error) => next(error))
+  //Response based on missing fields
+  if (!hasMissingFields) {
+    const savedBlog = await blog.save()
+    response.status(201).json(savedBlog)
+  } else {
+    response.status(400).json('title or URL missing')
+  }
 })
 
 //DELETE for deleting a blog list item
-blogsRouter.delete('/:id', (request, response, next) => {
-  Blog.findByIdAndDelete(request.params.id)
-    .then(() => {
-      response.status(204).end()
-    })
-    .catch((error) => next(error))
+//Refactored to async await
+blogsRouter.delete('/:id', async (request, response) => {
+  await Blog.findByIdAndDelete(request.params.id)
+  response.status(204).end()
 })
 
 //PUT for updating blog list item
-blogsRouter.put('/:id', (request, response, next) => {
+//Refactored to async await
+blogsRouter.put('/:id', async (request, response) => {
   const { title, author, url, likes } = request.body
 
-  Blog.findById(request.params.id)
-    .then((blog) => {
-      if (!blog) {
-        return response.status(404).end()
-      }
+  const blog = await Blog.findById(request.params.id)
 
-      blog.title = title
-      blog.author = author
-      blog.url = url
-      blog.likes = likes
+  //If blog cannot be found with given id
+  if (!blog) {
+    response.status(404).end()
+  }
 
-      return blog.save().then((updatedBlog) => {
-        response.json(updatedBlog)
-      })
-    })
-    .catch((error) => next(error))
+  //Put new values to fields
+  blog.title = title
+  blog.author = author
+  blog.url = url
+  blog.likes = likes
+
+  //Save the modified blog entry and send response
+  const modifiedBlog = await blog.save()
+  response.status(201).json(modifiedBlog)
 })
 
 module.exports = blogsRouter
